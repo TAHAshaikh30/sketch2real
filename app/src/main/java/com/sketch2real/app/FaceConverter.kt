@@ -19,6 +19,14 @@ class FaceConverter(private val context: Context) {
             val model = loadModelFile()
             val options = Interpreter.Options()
             interpreter = Interpreter(model, options)
+            android.util.Log.i("FaceConverter", "TensorFlow Lite model loaded successfully")
+            
+            // Check if we're using the placeholder model (which is a text file, not a valid TFLite model)
+            // This will throw an exception when trying to use it for inference
+            if (model.capacity() < 1000) { // Real TFLite models are typically much larger
+                android.util.Log.w("FaceConverter", "Loaded model appears to be a placeholder. Using mock conversion instead.")
+                interpreter = null
+            }
         } catch (e: Exception) {
             e.printStackTrace()
             // Log that we'll be using mock conversion instead
@@ -203,6 +211,14 @@ class FaceConverter(private val context: Context) {
         return outputBitmap
     }
 
+    /**
+     * Checks if the app is using the real TensorFlow Lite model or the mock conversion
+     * @return true if using the real model, false if using mock conversion
+     */
+    fun isUsingRealModel(): Boolean {
+        return interpreter != null
+    }
+    
     fun close() {
         interpreter?.close()
         interpreter = null

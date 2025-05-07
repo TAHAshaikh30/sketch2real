@@ -33,8 +33,17 @@ The application uses a TensorFlow Lite model based on Pix2Pix GAN architecture, 
 
 1. Clone the repository
 2. Open the project in Android Studio
-3. Download the TensorFlow Lite model file (`sketch2real.tflite`) and place it in the `app/src/main/assets` directory
-4. Build and run the application
+3. Build and run the application
+
+### TensorFlow Lite Model
+
+A placeholder TensorFlow Lite model file (`sketch2real.tflite`) is included in the `app/src/main/assets` directory. For production use, replace it with a properly trained model that meets the following specifications:
+
+- Input: 256x256 RGB image normalized to [-1, 1]
+- Output: 256x256 RGB image normalized to [-1, 1]
+- Architecture: Pix2Pix GAN or similar image-to-image translation model
+
+See the README.txt file in the assets directory for more detailed instructions on replacing the model.
 
 ## Model Training
 

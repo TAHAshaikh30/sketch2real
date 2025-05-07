@@ -91,6 +91,18 @@ class MainActivity : AppCompatActivity() {
         initViews()
         setupClickListeners()
         checkAndRequestPermissions()
+        checkModelStatus()
+    }
+    
+    private fun checkModelStatus() {
+        // Check if we're using the real model or the mock conversion
+        val isUsingRealModel = modelConverter.isUsingRealModel()
+        val message = if (isUsingRealModel) {
+            "Using AI model for conversion"
+        } else {
+            "Using mock conversion (AI model not available)"
+        }
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
     
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -109,12 +121,20 @@ class MainActivity : AppCompatActivity() {
     }
     
     private fun showAboutDialog() {
+        val modelStatus = if (modelConverter.isUsingRealModel()) {
+            "Status: Using AI model for conversion"
+        } else {
+            "Status: Using mock conversion (AI model not available)"
+        }
+        
         AlertDialog.Builder(this)
             .setTitle("About ${getString(R.string.app_name)}")
             .setMessage(
-                "Version: $APP_VERSION\n\n" +
+                "Version: $APP_VERSION\n" +
+                "$modelStatus\n\n" +
                 "An AI-powered application that converts sketch faces to realistic human faces with natural coloring.\n\n" +
-                "This app uses machine learning to transform simple sketches into photorealistic faces with proper skin tones."
+                "This app uses machine learning to transform simple sketches into photorealistic faces with proper skin tones.\n\n" +
+                "To use the full AI-powered functionality, please ensure a valid TensorFlow Lite model file is placed in the assets directory."
             )
             .setPositiveButton("OK", null)
             .show()
@@ -228,6 +248,14 @@ class MainActivity : AppCompatActivity() {
             progressBar.visibility = View.VISIBLE
             convertButton.isEnabled = false
             
+            // Show a message about which conversion method is being used
+            val conversionMessage = if (modelConverter.isUsingRealModel()) {
+                "Converting using AI model..."
+            } else {
+                "Converting using mock algorithm (AI model not available)..."
+            }
+            Toast.makeText(this, conversionMessage, Toast.LENGTH_SHORT).show()
+            
             CoroutineScope(Dispatchers.Main).launch {
                 try {
                     // Preprocess the sketch for better conversion results
@@ -247,6 +275,14 @@ class MainActivity : AppCompatActivity() {
                         outputImageView.setImageBitmap(it)
                         saveButton.isEnabled = true
                         shareButton.isEnabled = true
+                        
+                        // Show success message
+                        val successMessage = if (modelConverter.isUsingRealModel()) {
+                            "Conversion completed using AI model"
+                        } else {
+                            "Conversion completed using mock algorithm"
+                        }
+                        Toast.makeText(this@MainActivity, successMessage, Toast.LENGTH_SHORT).show()
                     }
                 } catch (e: Exception) {
                     Toast.makeText(this@MainActivity, "Error converting image: ${e.message}", Toast.LENGTH_LONG).show()
