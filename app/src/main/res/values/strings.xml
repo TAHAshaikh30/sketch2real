@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Sketch2Real</string>
+    <string name="capture_sketch">Capture Sketch</string>
+    <string name="import_sketch">Import Sketch</string>
+    <string name="convert">Convert to Real Face</string>
+    <string name="save_image">Save Image</string>
+    <string name="share_image">Share Image</string>
+    <string name="processing">Processing...</string>
+</resources>
